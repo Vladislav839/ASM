@@ -1,0 +1,31 @@
+#include <iostream>
+
+int isEven(int a) {
+  int remainder;
+
+  __asm
+  {
+			mov eax, a;
+			cdq;
+			mov esi, 2;
+			idiv esi;
+			sub esi, edx;
+			mov remainder, edx;
+  }
+  return !remainder;
+}
+
+int main() {
+  int num;
+  std::cout << "Enter value\n";
+  std::cin >> num;
+  if (isEven(num))
+  {
+    std::cout << "The value is even\n";
+  }
+  else
+  {
+    std::cout << "The value is odd\n";
+  }
+  system("pause");
+}
