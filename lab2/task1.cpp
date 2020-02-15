@@ -1,41 +1,59 @@
 #include <iostream>
+#include <cmath>
 
-bool isTriangle(int a, int b, int c)
-{
-	int result = 0;
-	__asm
-	{
-		mov eax, a;
-		mov ebx, result;
-		add eax, b;
-		cmp eax, c;
-		jg label1
-		jmp end_;
-	label1:
-		add ebx, 1;
-		mov eax, b;
-		add eax, c;
-		cmp eax, a;
-		jg label2
-		jmp end_;
-	label2:
-		add ebx, 1;
-		mov eax, a;
-		add eax, c;
-		cmp eax, b;
-		jg label3 
-		jmp end_;
-	label3:
-		mov ebx, 1;
-		mov result, ebx;
-	end_:
-	}
-	return result;
+bool isTriangle(int a, int b, int c) {
+  int res = 0;
+
+  __asm {
+	  mov eax, a;
+	  mov ebx, b;
+	  mov ecx, c;
+	  cmp eax, ecx
+	  jg swap1
+	  jmp end_1
+  swap1:
+	  mov edx, eax;
+	  mov eax, ecx;
+	  mov ecx, edx;
+	  jmp end_1;
+  end_1:
+	  cmp eax, ebx;
+	  jg swap2
+	  jmp end_2
+  swap2:
+	  mov edx, eax;
+	  mov eax, ebx;
+	  mov ebx, edx;
+	  jmp end_2
+  end_2:
+	  cmp ebx, ecx
+	  jg swap3
+	  jmp end_
+  swap3:
+	  mov edx, ebx;
+	  mov ebx, ecx;
+	  mov ecx, edx;
+	  jmp end_
+  end_:
+	  sub ecx, ebx
+      cmp ecx, eax
+      jl comparison
+	  jmp final_
+  comparison:
+	  mov res, 1
+	  jmp final_
+  final_:
+
+  }
+
+  return res;
 }
 
 int main()
 {
-  std::cout << isTriangle(3, 4, 10) << std::endl;
-	system("pause");
-	return 0;
+  std::cout << isTriangle(3, 4, 5) << std::endl;
+  std::cout << isTriangle(pow(2, 31) - 1, pow(2, 31) - 2, pow(2, 31) - 3) << std::endl;
+  std::cout << isTriangle(3, 5, 1) << std::endl;
+  system("pause");
+  return 0;
 }
