@@ -1,0 +1,46 @@
+#include <iostream>
+
+void Reduce(int* p, int* q)
+{
+    int res1;
+    int res2;
+    __asm
+    {
+        mov eax, p;
+        mov ebx, q;
+        mov eax, dword ptr [eax];
+        mov ebx, dword ptr [ebx];
+        mov ecx, eax;
+        mov edx, ebx;
+
+    beg:
+        cmp ecx, edx;
+        je end_;
+        jg gr;
+        sub edx, ecx;
+        jmp beg;
+    gr:
+        sub ecx, edx;
+        jmp beg;
+    end_:
+        cdq;
+        idiv ecx;
+        mov res1, eax;
+        mov eax, ebx;
+        cdq;
+        idiv ecx;
+        mov res2, eax;
+    }
+    *p = res1;
+    *q = res2;
+}
+
+
+int main() {
+    int a = 3;
+    int b = 9;
+    Reduce(&a, &b);
+    std::cout << a << "/" << b <<std::endl;
+    system("pause");
+    return 0;
+}
