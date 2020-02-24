@@ -1,0 +1,71 @@
+#include <iostream>
+
+int NormolizeMatrix(int** arr, int n, int m)
+{
+	int res;
+	__asm
+	{
+		mov eax, n
+		mov ecx, m
+		;---------------
+		mov edi, arr;
+		mov edi, [edi];
+		mov edi, dword ptr[edi]
+		;--------------
+		mov edx, arr;
+		xor esi, esi;
+	begin:
+		cmp eax, esi;
+		je end_;
+		inc esi;
+		mov ebx, [edx][esi * 4];
+	inner_begin:
+		cmp [ebx][ecx * 4], edi;
+		jng m_notMin;
+		mov edi, [ebx][ecx * 4];
+	m_notMin:
+		inc ecx;
+		loop inner_begin;
+		jmp begin;
+	end_:
+		mov res, edi;
+	}
+	return res;
+}
+
+int main()
+{
+	int n, m;
+
+	std::cout << "input n and m\n";
+
+	std::cin >> n >> m;
+
+	int** matrix = new int*[n];
+
+	for (int i = 0; i < 4; i++)
+	{
+		matrix[i] = new int[m];
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			matrix[i][j] = rand() % 10 + 1;
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			std::cout << matrix[i][j] << "\t";
+		}
+		std::cout << "\n";
+	}
+
+	std::cout << NormolizeMatrix(matrix, n, m) << std::endl;
+	system("pause");
+	return 0;
+}
