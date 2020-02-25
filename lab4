@@ -1,39 +1,62 @@
 #include <iostream>
 
-int NormolizeMatrix(int** arr, int n, int m)
+void NormolizeMatrix(int** arr, int n, int m)
 {
-	int res;
+	int min;
+
+	int default_min = *(*arr);
+
 	__asm
 	{
-		mov eax, n
-		mov ecx, m
-		;---------------
-		mov edi, arr;
-		mov edi, [edi];
-		mov edi, dword ptr[edi]
-		;--------------
-		mov edx, arr;
+		mov ecx, m;
 		xor esi, esi;
+		mov edx, arr;
 	begin:
-		cmp eax, esi;
+		xor eax, eax;
+		sub esi, n;
+		cmp esi, 0;
 		je end_;
-		inc esi;
+		add esi, n;
 		mov ebx, [edx][esi * 4];
 	inner_begin:
-		cmp [ebx][ecx * 4], edi;
-		jng m_notMin;
-		mov edi, [ebx][ecx * 4];
+		mov edi, [ebx][eax * 4];
+		sub edi, default_min;
+		cmp edi, 0;
+		jnl m_notMin;
+		add edi, default_min;
+		mov min, edi;
 	m_notMin:
-		inc ecx;
+		inc eax;
+		add edi, default_min;
 		loop inner_begin;
+		inc esi;
+		mov ecx, m;
 		jmp begin;
 	end_:
-		mov res, edi;
+		xor esi, esi;
+	begin2:
+		xor eax, eax;
+		sub esi, n;
+		cmp esi, 0;
+		je end_2;
+		add esi, n;
+		mov ebx, [edx][esi * 4];
+	inner_begin2:
+		mov edi, [ebx][eax * 4];
+		sub edi, min;
+		mov[ebx][eax * 4], edi;
+		inc eax;
+		loop inner_begin2;
+		inc esi;
+		mov ecx, m;
+		jmp begin2;
+	end_2:
+
 	}
-	return res;
 }
 
-int main()
+
+int main() 
 {
 	int n, m;
 
@@ -41,9 +64,9 @@ int main()
 
 	std::cin >> n >> m;
 
-	int** matrix = new int*[n];
+	int** matrix = new int* [n];
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < n; i++)
 	{
 		matrix[i] = new int[m];
 	}
@@ -65,7 +88,18 @@ int main()
 		std::cout << "\n";
 	}
 
-	std::cout << NormolizeMatrix(matrix, n, m) << std::endl;
+	NormolizeMatrix(matrix, n, m);
+
+	std::cout << "Normolized matrix" << std::endl;
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			std::cout << matrix[i][j] << "\t";
+		}
+		std::cout << "\n";
+	}
 	system("pause");
 	return 0;
 }
