@@ -1,0 +1,187 @@
+#include <iostream>
+
+int __stdcall factorial(int num) {
+    int res;
+
+    __asm {
+        mov ecx, num
+        mov eax, 1
+        mov ebx, 1
+        beg:
+        cmp ebx, ecx
+            jge end
+            add ebx, 1
+            mul ebx
+            jmp beg
+
+            end :
+        mov res, eax;
+    }
+    return res;
+}
+
+void __cdecl Reduce(int* p, int* q)
+{
+    int res1;
+    int res2;
+    __asm
+    {
+        mov eax, p;
+        mov ebx, q;
+        mov eax, dword ptr[eax];
+        mov ebx, dword ptr[ebx];
+        mov ecx, eax;
+        mov edx, ebx;
+
+    beg:
+        cmp ecx, edx;
+        je end_;
+        jg gr;
+        sub edx, ecx;
+        jmp beg;
+    gr:
+        sub ecx, edx;
+        jmp beg;
+    end_:
+        cdq;
+        idiv ecx;
+        mov res1, eax;
+        mov eax, ebx;
+        cdq;
+        idiv ecx;
+        mov res2, eax;
+    }
+    *p = res1;
+    *q = res2;
+}
+
+int __fastcall Number_Of_Roots(int a, int b, int c)
+{
+    int result;
+
+    __asm
+    {
+        mov eax, b;
+        sar eax, 1;
+        imul eax;
+        jnc label1;
+        mov esi, 1;
+        mov ecx, edx;
+    label1:
+        mov ebx, eax;
+        mov eax, a;
+        imul eax, c;
+        jnc label2;
+        mov ebp, 1;
+    label2:
+        cmp esi, 1;
+        je label3;
+        cmp ebp, 1;
+        je label3;
+        cmp ebx, eax;
+        jg l1;
+        je l2;
+        jl l3;
+    l1:
+        mov result, 2;
+        jmp end_;
+    l2:
+        mov result, 1;
+        jmp end_;
+    l3:
+        mov result, 0;
+        jmp end_;
+    label3:
+        cmp esi, 1;
+        jne label4;
+        cmp ebp, 1;
+        je label4;
+        mov result, 2;
+        jmp end_;
+    label4:
+        cmp esi, 1;
+        je label5;
+        cmp ebp, 1;
+        jne label5;
+        cmp eax, 0;
+        jg gr1;
+        jl less1;
+    gr1:
+        mov result, 0;
+        jmp end_;
+    less1:
+        mov result, 2;
+        jmp end_;
+    label5:
+        cmp eax, ebx;
+        jg gr2;
+        jl less2;
+        je eq1;
+    gr2:
+        mov result, 2;
+        jmp end_;
+    less2:
+        mov result, 0;
+        jmp end_;
+    eq1:
+        cmp ecx, edx;
+        jg gr3;
+        jl less3;
+        je eq2;
+    gr3:
+        mov result, 2;
+        jmp end_;
+    less3:
+        mov result, 0;
+        jmp end_;
+    eq2:
+        mov result, 1;
+        jmp end_;
+    end_:
+
+    }
+    return result;
+}
+
+int main()
+{
+    std::cout << "Input parametr fo calculating factorial" << std::endl;
+    int value, res1;
+    std::cin >> value;
+    __asm
+    {
+        mov eax, value;
+        push eax;
+        call factorial;
+        mov res1, eax;
+    }
+    std::cout << "Factorial of " << value << " is " << res1 << std::endl;
+    std::cout << "Enter numerator and denominator of fraction\n";
+    int p, q;
+    std::cin >> p >> q;
+    __asm
+    {
+        lea eax, p;
+        push eax;
+        lea eax, q;
+        push eax;
+        call Reduce;
+        add esp, 8;
+    }
+    std::cout << "Fraction after reducing " << p << "/" << q << std::endl;
+    std::cout << "Input a, b, c\n";
+    int a, b, c, res2;
+    std::cin >> a >> b >> c;
+    __asm
+    {
+        mov ecx, a;
+        mov edx, b;
+        mov eax, c;
+        push eax;
+        call Number_Of_Roots;
+        mov res2, eax;
+    }
+    std::cout << "Number of roots: " << res2 << std::endl;
+    system("pause");
+    return 0;
+}
