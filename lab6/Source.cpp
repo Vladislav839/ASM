@@ -1,63 +1,29 @@
-.686
-.model flat
+#include <iostream>
 
-public _LastIndexOf
-
-.data
-
-.code
-
-_LastIndexOf proc
-    mov edi, dword ptr [esp + 4]
-    mov ecx, -1;
-    xor al, al
+extern "C"
+{
+    int __cdecl LastIndexOf(char* source, char* substring);
+}
 
 
-    cld
-    repne scasb
-
-    neg ecx;
-    sub ecx, 2;
-    mov ebx, ecx;
-    mov ecx, -1
-    mov edi, dword ptr [esp + 8]
-
-    cld
-    repne scasb
-
-    neg ecx;
-    sub ecx, 2;
-    mov edx, ecx;
-
-    mov edi, dword ptr [esp + 4]
-    mov esi, dword ptr [esp + 8]
-    mov al, byte ptr [esi]
-    mov ecx, ebx;
-begin:
-    jecxz not_eq
-    dec ecx
-    push ecx
-    push edi
-    add edi, ecx
-    mov ecx, edx
-    cld
-    repe cmpsb
-    jz found
- not_found:
-    pop edi
-    pop ecx
-    mov esi, dword ptr [esp + 8]
-    jmp begin
- found:
-    pop edi
-    pop ecx
-    mov eax, ecx
-    ret
- not_eq:
-    mov eax, -1
-    ret
-    
-    
-_LastIndexOf endp
-
-end
+int main()
+{
+    char* str = new char[256];
+    std::cin >> str;
+    char* substring = new char[256];
+    std::cin >> substring;
+    int res;
+    __asm
+    {
+        mov eax, substring;
+        push eax;
+        mov eax, str;
+        push eax;
+        call LastIndexOf;
+        add esp, 8;
+        mov res, eax;
+    }
+    std::cout << res << std::endl;
+    system("pause"); 
+    return 0;
+}
