@@ -40,27 +40,27 @@ skip_trail:
     sub     eax, ecx 
     mov     esi, ecx
     mov     ecx, eax;
-    xor ebx, ebx;
-    push ecx;
-    mov   edi,esi          
-    xor   ax,ax          
+    xor     ebx, ebx;
+    push    ecx;
+    mov     edi,esi          
+    xor     ax,ax          
 cycle:                  
     lodsb                
-    cmp   al,' '         
-    jne   miss           
-    cmp   ax,'  '        
-     je    next           
+    cmp     al,' '         
+    jne     miss           
+    cmp     ax,'  '        
+    je      next           
 miss:                   
     stosb               
 next:                   
-    inc ebx;
-    xchg  ah,al          
-    loop  cycle          
+    inc     ebx;
+    xchg    ah,al          
+    loop    cycle          
    
-    mov   al,0
+    mov     al,0
 
-    pop eax;
-    inc eax;
+    pop     eax;
+    inc     eax;
     ret
      
 _TrimAll endp
