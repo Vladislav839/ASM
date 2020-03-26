@@ -1,66 +1,76 @@
-686
+.686
 .model flat
 
 public _TrimAll
+public _IsWhitespace@1
 
 .data
 
 .code
 
+_IsWhitespace@1 proc
+    mov bl, byte ptr [esp + 1]
+    cmp bl, ' '
+    jne end_
+    mov eax, 1
+    end_:
+    mov eax, 0
+    ret 1
+_IsWhitespace@1 endp
 
 _TrimAll proc
-    mov     eax, dword ptr [esp + 4] 
-    mov     ecx, eax        
-    push    eax             
+    enter 0, 0 
+    mov     ebx, dword ptr [ebp + 08h] 
+    mov     ecx, ebx        
+    push    ebx             
 
 
-skip_lead:                                  
+skip_lead:                              
     mov     dl, [ecx]       
     inc     ecx           
-    cmp     dl, 32          
+    cmp     dl, 32    
     je      skip_lead     
     dec     ecx             
-    dec     eax            
+    dec     ebx            
 
 shift_left:               
     mov     dl, [ecx]       
-    inc     eax            
+    inc     ebx            
     inc     ecx             
-    mov     [eax], dl       
+    mov     [ebx], dl       
     or      dl, dl          
     jnz     shift_left      
     pop     ecx             
 
 skip_trail:
-    dec     eax             
-    cmp     byte ptr [eax], 32                               
+    dec     ebx             
+    cmp     byte ptr [ebx], 32                               
     je      skip_trail                                      
-    inc     eax             
-    mov     byte ptr [eax], 0    
-    sub     eax, ecx 
+    inc     ebx             
+    mov     byte ptr [ebx], 0    
+    sub     ebx, ecx 
     mov     esi, ecx
-    mov     ecx, eax;
-    xor     ebx, ebx;
+    mov     ecx, ebx;
     push    ecx;
     mov     edi,esi          
-    xor     ax,ax          
+    xor     bx,bx          
 cycle:                  
     lodsb                
-    cmp     al,' '         
+    cmp     bl,' '         
     jne     miss           
-    cmp     ax,'  '        
-    je      next           
+    cmp     bx,'  '        
+     je     next           
 miss:                   
     stosb               
 next:                   
-    inc     ebx;
-    xchg    ah,al          
+    xchg    bh,bl          
     loop    cycle          
    
-    mov     al,0
+    mov     bl,0
 
     pop     eax;
     inc     eax;
+    leave
     ret
      
 _TrimAll endp
