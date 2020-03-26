@@ -3,8 +3,8 @@
 
 extern "C" {
 int __cdecl TrimAll(char* str);
+bool __stdcall IsWhitespace(char s);
 }
-
 
 int main() {
   char str[] = "   bsndb   j ihijoi   jiojilk  lkhlkhl   ";
