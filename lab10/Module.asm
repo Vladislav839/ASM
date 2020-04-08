@@ -40,7 +40,7 @@ PUBLIC GetLength
         MOV result.Z, r10
         LEA rax, result
 
-        RET 48
+        RET
     SUM endp
 
     GetLength proc    
@@ -63,7 +63,7 @@ PUBLIC GetLength
         FSTP temp
         lea rax, temp
 
-        RET 16
+        RET
     GetLength endp
 
 end
